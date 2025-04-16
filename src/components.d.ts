@@ -7,6 +7,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActivityDialog: typeof import('./components/ActivityDialog.vue')['default']
+    AdminHeader: typeof import('./components/layouts/AdminHeader.vue')['default']
+    AdminSide: typeof import('./components/layouts/AdminSide.vue')['default']
     BaseHeader: typeof import('./components/layouts/BaseHeader.vue')['default']
     BaseSide: typeof import('./components/layouts/BaseSide.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -45,6 +48,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     Login: typeof import('./components/Login.vue')['default']
     Logos: typeof import('./components/Logos.vue')['default']

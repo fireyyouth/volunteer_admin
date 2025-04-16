@@ -1,21 +1,21 @@
 <template>
     <div class="register-page">
-
-        <el-radio-group v-model="form.role">
-            <el-radio value="teacher">教职工</el-radio>
-            <el-radio value="student">学生</el-radio>
-            <el-radio value="visitor">访客</el-radio>
-        </el-radio-group>
-
-        <el-form :model="form" ref="formRef" label-width="auto" class="register-form" :rules="rules[form.role]">
-            <el-form-item :label="identifier_label[form.role]" prop="identifier">
-                <el-input v-model="form.identifier" :placeholder="identifier_placeholder[form.role]" />
+        <h1>志愿者活动平台注册</h1>
+        <el-form :model="form" ref="formRef" label-width="auto" class="register-form" :rules="rules">
+            <el-form-item label="姓名" prop="username">
+                <el-input type="text" v-model="form.username" placeholder="请输入姓名" :validate-event="false" />
+            </el-form-item>
+            <el-form-item label="账号" prop="identifier">
+                <el-input v-model="form.identifier" placeholder="请输入账号" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="form.password" placeholder="请输入密码" :validate-event="false" />
             </el-form-item>
-            <el-form-item label="姓名" prop="username">
-                <el-input type="text" v-model="form.username" placeholder="请输入姓名" :validate-event="false" />
+            <el-form-item label="确认密码" prop="password_confirmation">
+                <el-input type="password" v-model="form.password_confirmation" placeholder="请确认密码" :validate-event="false" />
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input type="email" v-model="form.email" placeholder="请输入邮箱" :validate-event="false" />
             </el-form-item>
             <el-form-item label="性别" prop="gender">
                 <el-select v-model="form.gender" :validate-event="false">
@@ -23,14 +23,13 @@
                     <el-option label="女" value="女" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="邮箱" prop="email">
-                <el-input type="email" v-model="form.email" placeholder="请输入邮箱" :validate-event="false" />
+            <el-form-item label=" ">
+                <el-button type="primary" @click="handleRegister" :loading="loading">注册</el-button>
             </el-form-item>
-            <el-form-item label="手机号" prop="phone">
-                <el-input type="phone" v-model="form.phone" placeholder="请输入手机号" :validate-event="false" />
+            <el-form-item>
+                <el-button type="text" @click="router.push('/login')">已有账号, 直接登录</el-button>
             </el-form-item>
         </el-form>
-        <el-button type="primary" @click="handleRegister" :loading="loading">注册</el-button>
     </div>
 </template>
 
@@ -48,33 +47,35 @@ const loading = ref(false)
 const formRef = useTemplateRef<FormInstance>('formRef')
 
 const form = ref({
-    role: 'teacher',
     identifier: '',
     password: '',
+    password_confirmation: '',
     username: '',
     gender: '',
     email: '',
-    phone: '',
 })
 
-const identifier_label = {
-    teacher: '工号',
-    student: '学号',
-    visitor: '身份证号'
-}
-const identifier_placeholder = {
-    teacher: '请输入8位工号',
-    student: '请输入8位学号',
-    visitor: '请输入18位身份证号码'
-}
-
-const teacher_rules = ref({
+const rules = ref({
     identifier: [
         { required: true, message: '请输入工号', trigger: 'blur' },
-        { pattern: /^[0-9]{8}$/, message: '格式为 8 位数字', trigger: 'blur' },
+        { min: 8, message: '账号长度至少为8位', trigger: 'blur' },
     ],
     password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, message: '密码长度至少为6位', trigger: 'blur' }
+    ],
+    password_confirmation: [
+        { required: true, message: '请输入确认密码', trigger: 'blur' },
+        {
+            validator: (_rule: any, value: string, callback: (error?: Error) => void) => {
+                if (value !== form.value.password) {
+                    callback(new Error('两次输入的密码不一致'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'blur'
+        }
     ],
     username: [
         { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -91,64 +92,12 @@ const teacher_rules = ref({
         { pattern: /^[0-9]{11}$/, message: '格式为 11 位数字', trigger: 'blur' },
     ]
 })
-
-const student_rules = ref({
-    identifier: [
-        { required: true, message: '请输入学号', trigger: 'blur' },
-        { pattern: /^[0-9]{8}$/, message: '格式为 8 位数字', trigger: 'blur' },
-    ],
-    password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-    ],
-    username: [
-        { required: true, message: '请输入姓名', trigger: 'blur' },
-    ],
-    gender: [
-        { required: true, message: '请输入性别', trigger: 'blur' },
-    ],
-    email: [
-        { required: true, message: '请输入邮箱', trigger: 'blur' },
-        { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' },
-    ],
-    phone: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
-        { pattern: /^[0-9]{11}$/, message: '格式为 11 位数字', trigger: 'blur' },
-    ]
-})
-
-const visitor_rules = ref({
-    identifier: [
-        { required: true, message: '请输入身份证号码', trigger: 'blur' },
-        { pattern: /^[0-9]{18}$/, message: '格式为 18 位数字', trigger: 'blur' },
-    ],
-    password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-    ],
-    username: [
-        { required: true, message: '请输入姓名', trigger: 'blur' },
-    ],
-    gender: [
-        { required: true, message: '请输入性别', trigger: 'blur' },
-    ],
-    email: [
-        { required: true, message: '请输入邮箱', trigger: 'blur' },
-        { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' },
-    ],
-    phone: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
-        { pattern: /^[0-9]{11}$/, message: '格式为 11 位数字', trigger: 'blur' },
-    ]
-})
-const rules = {
-    teacher: teacher_rules,
-    student: student_rules,
-    visitor: visitor_rules
-}
 
 const handleRegister = async () => {
     try {
         console.log('validating')
         await formRef.value?.validate()
+
     } catch (error) {
         console.log('validate error', error)
         return
@@ -185,7 +134,15 @@ const handleRegister = async () => {
 }
 
 .register-form {
+    background-color: white;
     width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+button {
+  width: 100%;
 }
 
 </style>

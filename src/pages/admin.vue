@@ -1,6 +1,7 @@
 <template>
-  <BaseHeader />
+  <AdminHeader />
   <div class="main-container flex">
+    <AdminSide />
     <div w="full" py="4">
       <router-view v-slot="{ Component }">
         <keep-alive>

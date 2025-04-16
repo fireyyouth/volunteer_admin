@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-router.push('/dashboard/bulletin_board')
+router.push('/dashboard/activity')
 
 </script>
 <template></template>

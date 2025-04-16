@@ -1,10 +1,7 @@
 <template>
     <h1>个人中心</h1>
     <el-descriptions border>
-        <el-descriptions-item label="角色" :span="1">
-            {{ roleMap[form.role] }}
-        </el-descriptions-item>
-        <el-descriptions-item label="工号" :span="1">
+        <el-descriptions-item label="账号" :span="1">
             {{ form.identifier }}
         </el-descriptions-item>
         <el-descriptions-item label="姓名" :span="1">
@@ -18,9 +15,9 @@
         </el-descriptions-item>
         <el-descriptions-item label="邮箱" :span="1">
             <el-input v-model="form.email" :disabled="inputDisabled" />
-            </el-descriptions-item>
-        <el-descriptions-item label="手机号" :span="1">
-            <el-input v-model="form.phone" :disabled="inputDisabled" />
+        </el-descriptions-item>
+        <el-descriptions-item label="志愿时长" :span="1">
+            {{ form.volunteer_hours }}
         </el-descriptions-item>
     </el-descriptions>
     <el-button v-if="inputDisabled" type="primary" @click="inputDisabled = false">编辑</el-button>

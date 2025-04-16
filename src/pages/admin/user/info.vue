@@ -3,7 +3,7 @@
 
     <el-dialog v-model="dialogVisible" title="编辑用户信息" width="30%">
         <el-form :model="form" label-width="120px">
-            <el-form-item label="工号">
+            <el-form-item label="账号">
                 {{ form.identifier }}
             </el-form-item>
             <el-form-item label="姓名">
@@ -18,9 +18,6 @@
             <el-form-item label="邮箱">
                 <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="手机号">
-                <el-input v-model="form.phone" />
-            </el-form-item> 
         </el-form>
         <template #footer>
             <el-button type="primary" @click="handleUpdate">更新</el-button>
@@ -33,7 +30,7 @@
         <el-table-column prop="username" label="姓名" />
         <el-table-column prop="gender" label="性别" />
         <el-table-column prop="email" label="邮箱" />
-        <el-table-column prop="phone" label="手机号" />
+        <el-table-column prop="volunteer_hour" label="志愿时长" />
         <el-table-column prop="update_time" label="更新时间" :formatter="formatTime" />
         <el-table-column label="操作">
             <template #default="scope">
@@ -51,7 +48,16 @@ import { ref } from 'vue';
 import { request } from '~/utils';
 import { ElMessage } from 'element-plus';
 
-const tableData = ref([]);
+const tableData = ref([
+    {
+        identifier: '123456789',
+        username: '张三',
+        gender: '男',
+        email: 'zhangsan@example.com',
+        volunteer_hour: 10,
+        update_time: new Date().toISOString()
+    }
+]);
 const dialogVisible = ref(false);
 
 const form = ref({})

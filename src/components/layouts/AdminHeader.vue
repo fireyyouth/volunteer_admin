@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import { repository } from '~/../package.json'
 import { User } from '@element-plus/icons-vue'
+import { toggleDark } from '~/composables'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { store } from '~/store'
@@ -25,13 +27,13 @@ function handleLogout() {
 </script>
 
 <template>
-  <el-menu router class="el-menu-demo" mode="horizontal" :ellipsis="false">
-    <el-menu-item index="/dashboard/activity">
-      <span>活动</span>
+  <el-menu background-color="steelblue" text-color="#fff" active-text-color="#ffd04b" class="el-menu-demo" mode="horizontal" :ellipsis="false">
+    <el-menu-item index="/">
+      <div class="flex items-center justify-center gap-2">
+        <span>志愿者活动管理平台</span>
+      </div>
     </el-menu-item>
-    <el-menu-item index="/dashboard/user_center">
-      <span>个人中心</span>
-    </el-menu-item>
+
     <el-sub-menu index="user" h="full">
       <template #title>
         <el-icon>
@@ -46,7 +48,7 @@ function handleLogout() {
 
 <style lang="scss">
 .el-menu-demo {
-  &.ep-menu--horizontal > .ep-menu-item:nth-child(2) {
+  &.ep-menu--horizontal > .ep-menu-item:nth-child(1) {
     margin-right: auto;
   }
 }

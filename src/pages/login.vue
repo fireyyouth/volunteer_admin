@@ -1,21 +1,27 @@
 <template>
   <div class="login-page">
+    <h1 class="title">志愿者活动平台登录</h1>
     <div class="login-container">
-      <h1 class="title">校园车辆管理系统</h1>
-      <el-form :model="teacherForm" ref="teacherFormRef" label-width="auto" style="max-width: 600px"
-      :rules="teacher_rules">
+      <el-form :model="userForm" ref="userFormRef" label-width="auto" style="max-width: 600px"
+      :rules="user_rules">
       <el-form-item prop="identifier">
-        <el-input v-model="teacherForm.identifier" :prefix-icon="User" placeholder="请输入8位工号/学号, 或18位身份证号" />
+        <el-input v-model="userForm.identifier" :prefix-icon="User" placeholder="请输入账号" />
       </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" v-model="teacherForm.password" :prefix-icon="Lock" placeholder="请输入密码" />
+          <el-input type="password" v-model="userForm.password" :prefix-icon="Lock" placeholder="请输入密码" />
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="userForm.type" placeholder="请选择用户类型">
+            <el-option label="用户" value="user"></el-option>
+            <el-option label="管理员" value="admin"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit()" :loading="loading">登录</el-button>
         </el-form-item>
       </el-form>
       <el-form-item>
-        <el-button type="text" @click="router.push('/register')">还没有账号？点击注册</el-button>
+        <el-button type="text" @click="router.push('/register')">注册用户</el-button>
       </el-form-item>
     </div>
   </div>
@@ -32,17 +38,16 @@ import { useTemplateRef, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { store } from '~/store'
 
-const teacherForm = reactive({
+const userForm = reactive({
   identifier: '',
   password: '',
 })
 
 const loading = ref(false)
 
-const teacher_rules = reactive({
+const user_rules = reactive({
   identifier: [
-    { required: true, message: '请输入工号或者学号', trigger: 'change' },
-    { pattern: /^([0-9]{8}|[0-9]{18})$/, message: '格式为 8 位数字或 18 位数字', trigger: 'change' },
+    { required: true, message: '请输入账号', trigger: 'change' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'change' },
@@ -52,12 +57,12 @@ const teacher_rules = reactive({
 
 const router = useRouter()
 
-const teacherFormRef = useTemplateRef<FormInstance>('teacherFormRef')
+const userFormRef = useTemplateRef<FormInstance>('userFormRef')
 
 const onSubmit = async () => {
   try {
     console.log('validating')
-    await teacherFormRef.value?.validate()
+    await userFormRef.value?.validate()
   } catch (error) {
     console.log('validate error', error)
     return
@@ -66,7 +71,7 @@ const onSubmit = async () => {
   try {
     const response = await fetch(`/api/main/login`, {
       method: 'POST',
-      body: JSON.stringify(teacherForm),
+      body: JSON.stringify(userForm),
     })
     const data = await response.json()
     console.log(data)
