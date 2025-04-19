@@ -4,10 +4,10 @@
     <el-dialog v-model="dialogVisible" title="编辑用户信息" width="30%">
         <el-form :model="form" label-width="120px">
             <el-form-item label="账号">
-                {{ form.identifier }}
+                {{ form.account }}
             </el-form-item>
             <el-form-item label="姓名">
-                <el-input v-model="form.username" />
+                <el-input v-model="form.name" />
             </el-form-item>
             <el-form-item label="性别">
                 <el-select v-model="form.gender">
@@ -26,12 +26,11 @@
     </el-dialog>
 
     <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="identifier" label="工号" />
-        <el-table-column prop="username" label="姓名" />
+        <el-table-column prop="account" label="账号" />
+        <el-table-column prop="name" label="姓名" />
         <el-table-column prop="gender" label="性别" />
         <el-table-column prop="email" label="邮箱" />
-        <el-table-column prop="volunteer_hour" label="志愿时长" />
-        <el-table-column prop="update_time" label="更新时间" :formatter="formatTime" />
+        <el-table-column prop="volunteerHour" label="志愿时长" />
         <el-table-column label="操作">
             <template #default="scope">
                 <div class="button-group">
@@ -48,29 +47,15 @@ import { ref } from 'vue';
 import { request } from '~/utils';
 import { ElMessage } from 'element-plus';
 
-const tableData = ref([
-    {
-        identifier: '123456789',
-        username: '张三',
-        gender: '男',
-        email: 'zhangsan@example.com',
-        volunteer_hour: 10,
-        update_time: new Date().toISOString()
-    }
-]);
+const tableData = ref([]);
 const dialogVisible = ref(false);
 
 const form = ref({})
 
-const formatTime = (row, column, cellValue) => {
-    return new Date(cellValue).toLocaleString();
-}
-
 function fetchData() {
-    fetch('/api/main/user')
-        .then(res => res.json())
-        .then(data => {
-            tableData.value = data.data;
+    request.get('/api/user')
+        .then(response => {
+            tableData.value = response.data;
         });
 }
 
@@ -82,14 +67,13 @@ const handleEdit = (row) => {
 }
 
 const handleUpdate = () => {
-    request.post(`/api/main/user/${form.value.id}`, {
-        username: form.value.username,
+    request.put(`/api/user/${form.value.id}`, {
+        name: form.value.name,
         gender: form.value.gender,
         email: form.value.email,
-        phone: form.value.phone
     })
-        .then(response => {
-            ElMessage.success(response.data.detail);
+        .then(() => {
+            ElMessage.success("更新成功");
             fetchData();
             dialogVisible.value = false;
         })
@@ -99,13 +83,13 @@ const handleUpdate = () => {
 }
 
 const handleDelete = (row) => {
-    request.delete(`/api/main/user/${row.id}`)
-        .then(response => {
-            ElMessage.success(response.data.detail);
+    request.delete(`/api/user/${row.id}`)
+        .then(() => {
+            ElMessage.success("删除成功");
             fetchData();
         })
         .catch(error => {
-            ElMessage.error(error.toString());
+            ElMessage.error(error);
         });
 }
 

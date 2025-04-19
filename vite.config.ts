@@ -13,11 +13,12 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5175",
+        target: "http://localhost:8080",
+        rewrite: (path: string) => path.replace(/^\/api/, ''),
         changeOrigin: true,
         headers: {
-          referer: 'http://localhost:5175',  // Manually override Referer
-          origin: 'http://localhost:5175',  // Manually override origin
+          referer: 'http://localhost:8080',  // Manually override Referer
+          origin: 'http://localhost:8080',  // Manually override origin
         },
       },
     },

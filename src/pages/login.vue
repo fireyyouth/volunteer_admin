@@ -4,17 +4,11 @@
     <div class="login-container">
       <el-form :model="userForm" ref="userFormRef" label-width="auto" style="max-width: 600px"
       :rules="user_rules">
-      <el-form-item prop="identifier">
-        <el-input v-model="userForm.identifier" :prefix-icon="User" placeholder="请输入账号" />
+      <el-form-item prop="account">
+        <el-input v-model="userForm.account" :prefix-icon="User" placeholder="请输入账号" />
       </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" v-model="userForm.password" :prefix-icon="Lock" placeholder="请输入密码" />
-        </el-form-item>
-        <el-form-item>
-          <el-select v-model="userForm.type" placeholder="请选择用户类型">
-            <el-option label="用户" value="user"></el-option>
-            <el-option label="管理员" value="admin"></el-option>
-          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit()" :loading="loading">登录</el-button>
@@ -37,16 +31,17 @@ import { useRouter } from 'vue-router'
 import { useTemplateRef, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { store } from '~/store'
+import { request } from '~/utils'
 
 const userForm = reactive({
-  identifier: '',
+  account: '',
   password: '',
 })
 
 const loading = ref(false)
 
 const user_rules = reactive({
-  identifier: [
+  account: [
     { required: true, message: '请输入账号', trigger: 'change' },
   ],
   password: [
@@ -69,20 +64,27 @@ const onSubmit = async () => {
   }
   loading.value = true
   try {
-    const response = await fetch(`/api/main/login`, {
+    const response = await fetch('/api/login', {
       method: 'POST',
-      body: JSON.stringify(userForm),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'username=' + userForm.account + '&password=' + userForm.password
     })
     const data = await response.json()
     console.log(data)
     if (response.status !== 200) {
-      ElMessage.error(data.detail)
+      ElMessage.error("登录失败")
       return
     }
-    ElMessage.success(data.detail)
+    ElMessage.success("登录成功")
     store.value.profile = data.data
     await new Promise(resolve => setTimeout(resolve, 500))
-    router.push('/dashboard')
+    if (data.data.roles.map((x: { name: string }) => x.name).includes('ADMIN')) {
+      router.push('/admin')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (error) {
     ElMessage.error(error.toString())
   } finally {

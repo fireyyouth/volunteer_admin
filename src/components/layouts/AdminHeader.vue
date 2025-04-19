@@ -39,7 +39,7 @@ function handleLogout() {
         <el-icon>
           <User />
         </el-icon>
-        <span>{{ store.profile?.username }}</span>
+        <span>{{ store.profile?.name }}</span>
       </template>
       <el-menu-item index="logout" @click="handleLogout">退出登录</el-menu-item>
     </el-sub-menu>

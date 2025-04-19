@@ -1,41 +1,57 @@
 <template>
-    <el-tabs>
-        <el-tab-pane label="我举办的" name="own">
-            <el-table :data="ownTable">
+    <el-tabs v-model="activeName">
+        <el-tab-pane label="我创建的" name="own">
+            <el-dialog v-model="dialogVisible">
+                <template #title>
+                    <h3>新建活动</h3>
+                </template>
+                <ActivityDialog />
+            </el-dialog>
+            <div>
+                <el-button type="primary" @click="dialogVisible = true">新建活动</el-button>
+            </div>
+            <el-table :data="ownActivities">
                 <el-table-column label="活动编号" >
                     <template #default="{ row }">
-                        <a @click="router.push(`/dashboard/activity/${row.activity_id}`)">{{ row.activity_id }}</a>
+                        <a @click="router.push(`/dashboard/activity/${row.id}`)">{{ row.id }}</a>
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="活动名称" />
-                <el-table-column prop="volunteer_count" label="活动人数" />
-                <el-table-column prop="start_time" label="开始时间" />
-                <el-table-column prop="end_time" label="结束时间" />
-                <el-table-column prop="publish_time" label="发布时间" />
-                <el-table-column prop="responsible_identifier" label="负责人账号" />
-                <el-table-column prop="responsible_person" label="负责人" />
+                <el-table-column prop="title" label="活动名称" />
+                <el-table-column label="活动人数" >
+                    <template #default="{ row }">
+                        {{ row.participants.length }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="startDate" label="开始时间" />
+                <el-table-column prop="endDate" label="结束时间" />
+                <el-table-column prop="createdOn" label="发布时间" :formatter="dateFormatter"/>
+                <el-table-column prop="creatorName" label="负责人" />
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
                     <template #default="{ row }">
+                        <el-button type="primary" v-if="row.status !== 'approved'" @click="handleApply(row.id)">申请举行该活动</el-button>
                         <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </el-tab-pane>
         <el-tab-pane label="我参与的" name="join">
-            <el-table :data="participatedTable">
+            <el-table :data="joinedActivities">
                 <el-table-column label="活动编号" >
                     <template #default="{ row }">
-                        <a @click="router.push(`/dashboard/activity/${row.activity_id}`)">{{ row.activity_id }}</a>
+                        <a @click="router.push(`/dashboard/activity/${row.id}`)">{{ row.id }}</a>
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="活动名称" />
-                <el-table-column prop="volunteer_count" label="活动人数" />
-                <el-table-column prop="start_time" label="开始时间" />
-                <el-table-column prop="end_time" label="结束时间" />
-                <el-table-column prop="publish_time" label="发布时间" />
-                <el-table-column prop="responsible_identifier" label="负责人账号" />
-                <el-table-column prop="responsible_person" label="负责人" />
+                <el-table-column prop="title" label="活动名称" />
+                <el-table-column label="活动人数" >
+                    <template #default="{ row }">
+                        {{ row.participants.length }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="startDate" label="开始时间" />
+                <el-table-column prop="endDate" label="结束时间" />
+                <el-table-column prop="createdOn" label="发布时间" :formatter="dateFormatter" />
+                <el-table-column prop="creatorName" label="负责人" />
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
                     <template #default="{ row }">
@@ -51,75 +67,75 @@
 import { ref } from 'vue'
 import { store } from '~/store'
 import { useRouter } from 'vue-router'
-
+import { request } from '~/utils'
+import { ElMessage } from 'element-plus'
+import ActivityDialog from '~/components/ActivityDialog.vue'
 const router = useRouter()
 
-const ownTable = ref([
-    {
-        activity_id: 'A01',
-        name: '活动1',
-        volunteer_count: 10,
-        start_time: '2025-04-16 10:00:00',
-        end_time: '2025-04-16 12:00:00',
-        publish_time: '2025-04-16 10:00:00',
-        responsible_identifier: 'admin',
-        responsible_person: '管理员',
-        status: '待审核'
-    },
-    {
-        activity_id: 'A02',
-        name: '活动1',
-        volunteer_count: 10,
-        start_time: '2025-04-16 10:00:00',
-        end_time: '2025-04-16 12:00:00',
-        publish_time: '2025-04-16 10:00:00',
-        responsible_identifier: 'admin',
-        responsible_person: '管理员',
-        status: '待审核'
-    }
-])
+const dialogVisible = ref(false)
 
-const participatedTable = ref([
-    {
-        participation_id: 1,
-        activity_id: "A01",
-        name: '活动1',
-        volunteer_count: 10,
-        start_time: '2025-04-16 10:00:00',
-        end_time: '2025-04-16 12:00:00',
-        publish_time: '2025-04-16 10:00:00',
-        responsible_identifier: 'admin',
-        responsible_person: '管理员',
-        status: '待审核'
-    }
-])
+const activeName = ref('own')
 
-const fetchTableData = async () => {
-    const response = await fetch('/api/main/activities')
-    const data = await response.json()
-    ownTable.value = data.filter(activity => activity.responsible_identifier === store.profile.identifier)
-    participatedTable.value = data.filter(activity => activity.volunteer_identifier === store.profile.identifier)
+const dateFormatter = (row: any, column: any, cellValue: any) => {
+    return new Date(cellValue).toLocaleString()
 }
 
-fetchTableData()
+const ownActivities = ref([])
+
+const joinedActivities = ref([])
+
+const fetchOwnActivities = async() => {
+    const response = await request.get('/api/activity/own')
+    ownActivities.value = response.data
+}
+const fetchJoinedActivities = async () => {
+    const response = await request.get('/api/activity/joined')
+    joinedActivities.value = response.data
+}
+
+function loadData() {
+    fetchOwnActivities()
+    fetchJoinedActivities()
+}
+
+loadData()
 
 const handleDeleteActivity = async (id: number) => {
-    const response = await fetch(`/api/main/activities/${id}`, { method: 'DELETE' })
-    if (response.ok) {
+    const response = await request.delete(`/api/activity/${id}`)
+    if (response.status === 200) {
         ElMessage.success('删除成功')
-        fetchTableData()
+        loadData()
     } else {
         ElMessage.error('删除失败')
     }
 }
 
 const handleDeleteParticipation = async (id: number) => {
-    const response = await fetch(`/api/main/activities/${id}/participation`, { method: 'DELETE' })
-    if (response.ok) {
-        ElMessage.success('删除成功')
-        fetchTableData()
+    const response = await request.post(`/api/activity/${id}/leave`, {})
+    if (response.status === 200) {
+        ElMessage.success('退出成功')
+        loadData()
     } else {
-        ElMessage.error('删除失败')
+        ElMessage.error('退出失败')
+    }
+}
+
+const handleApply = async (id: number) => {
+    try {
+        const response = await request.post(`/api/apply/`, {
+            activity: {
+                id: id
+            },
+            kind: 'host'
+        })
+        if (response.status === 200) {
+            ElMessage.success('成功创建申请')
+            loadData()
+        } else {
+            ElMessage.error('创建申请失败')
+        }
+    } catch (error) {
+        ElMessage.error('创建申请失败')
     }
 }
 </script>

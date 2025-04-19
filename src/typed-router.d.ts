@@ -31,6 +31,7 @@ declare module 'vue-router/auto-routes' {
     '/dashboard/bulletin_board': RouteRecordInfo<'/dashboard/bulletin_board', '/dashboard/bulletin_board', Record<never, never>, Record<never, never>>,
     '/dashboard/user_center': RouteRecordInfo<'/dashboard/user_center', '/dashboard/user_center', Record<never, never>, Record<never, never>>,
     '/dashboard/user_center/activity': RouteRecordInfo<'/dashboard/user_center/activity', '/dashboard/user_center/activity', Record<never, never>, Record<never, never>>,
+    '/dashboard/user_center/apply': RouteRecordInfo<'/dashboard/user_center/apply', '/dashboard/user_center/apply', Record<never, never>, Record<never, never>>,
     '/dashboard/user_center/own_activity': RouteRecordInfo<'/dashboard/user_center/own_activity', '/dashboard/user_center/own_activity', Record<never, never>, Record<never, never>>,
     '/dashboard/user_center/password': RouteRecordInfo<'/dashboard/user_center/password', '/dashboard/user_center/password', Record<never, never>, Record<never, never>>,
     '/dashboard/user_center/profile': RouteRecordInfo<'/dashboard/user_center/profile', '/dashboard/user_center/profile', Record<never, never>, Record<never, never>>,

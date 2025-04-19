@@ -7,17 +7,25 @@
             </div>
             <div class="activity-info">
                 <div>
-                    <img :src="activity.image" />
+                    <img :src="activity.imageURL" />
                 </div>
                 <div>
-                    <h2>{{ activity.name }}</h2>
+                    <h2>{{ activity.title }}</h2>
                     <p> 活动编号: {{ activity.id }}</p>
-                    <p> 活动时间: {{ activity.start_time }} - {{ activity.end_time }}</p>
-                    <p> 发布时间: {{ activity.create_time }}</p>
-                    <p> 活动人数: {{ activity.volunteer_count }}</p>
-                    <p> 参与条件: {{ activity.volunteer_condition }}</p>
-                    <p> 负责人: {{ activity.responsible_person_name }}</p>
-                    <el-button type="primary" @click="handleJoinActivity">立即报名</el-button>
+                    <p> 活动时间: {{ activity.startDate }} - {{ activity.endDate }}</p>
+                    <p> 创建时间: {{ new Date(activity.createdOn).toLocaleString() }}</p>
+                    <p> 活动人数: {{ activity.participants.length }}</p>
+                    <p> 参与条件: {{ activity.volunteerCriteria }}</p>
+                    <p> 负责人: {{ activity.creatorName }}</p>
+                    <template v-if="activity.status === 'created'">
+                        <el-button type="primary" disabled>待审批</el-button>
+                    </template>
+                    <template v-else-if="store.profile.activities.includes(activity.id)">
+                        <el-button type="primary" disabled>已报名</el-button>
+                    </template>
+                    <template v-else-if="activity.status === 'approved'">
+                        <el-button type="primary" @click="handleJoinActivity">立即报名</el-button>
+                    </template>
                 </div>
             </div>
         </div>
@@ -29,31 +37,38 @@ import { ref } from 'vue'
 import { store } from '~/store'
 import { useRoute, useRouter } from 'vue-router';
 import { request } from '~/utils';
+import { ElMessage } from 'element-plus'
 
 const route = useRoute();
 const router = useRouter();
 
-const activity = ref({
-    id: 1,
-    name: '活动1',
-    start_time: '2025-04-16 10:00:00',
-    end_time: '2025-04-16 12:00:00',
-    create_time: '2025-04-16 10:00:00',
-    volunteer_count: 10,
-    volunteer_condition: '无',
-    responsible_person_name: '张三',
-    image: 'https://q0.itc.cn/q_70/images01/20240423/ee79b1283f204de48663f1f0ab3afccf.jpeg',
-})
+const activity = ref({})
 
-request.get('/main/activity/' + route.params.id)
+request.get('/api/activity/' + route.params.id)
     .then(response => {
-        activity.value = response.data.data;
+        activity.value = response.data;
     })
     .catch(error => {
         console.error(error);
     })
     .finally(() => {
     })
+
+const handleJoinActivity = () => {
+    request.post('/api/apply/', {
+        activity: {
+            id: activity.value.id
+        },
+        kind: 'join'
+    })
+    .then(response => {
+        ElMessage.success('成功创建报名申请，请查看申请记录')
+    })
+    .catch(error => {
+        console.error(error)
+        ElMessage.error('报名失败')
+    })
+}
 </script>
 
 <style scoped>

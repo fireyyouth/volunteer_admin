@@ -6,8 +6,8 @@ import { store } from '~/store'
 const router = useRouter()
 
 function handleLogout() {
-  fetch('/api/main/logout', {
-    method: 'POST',
+  fetch('/api/logout', {
+    method: 'GET',
   })
   .then(response => response.json())
   .then((data) => {
@@ -37,7 +37,7 @@ function handleLogout() {
         <el-icon>
           <User />
         </el-icon>
-        <span>{{ store.profile?.username }}</span>
+        <span>{{ store.profile?.name }}</span>
       </template>
       <el-menu-item index="logout" @click="handleLogout">退出登录</el-menu-item>
     </el-sub-menu>

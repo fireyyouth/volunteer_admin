@@ -1,7 +1,7 @@
 <template>
     <h1>修改密码</h1>
     <div class="password-form">
-        <el-form :model="form" label-width="auto" :rules="rules">
+        <el-form ref="formRef" :model="form" label-width="auto" :rules="rules">
             <el-form-item label="旧密码" prop="old_password">
                 <el-input type="password" v-model="form.old_password" />
             </el-form-item>
@@ -19,12 +19,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
+import { ElMessage } from 'element-plus'
+import { store } from '~/store'
+import { request } from '~/utils'
+
 const form = ref({
     old_password: '',
     new_password: '',
     new_password_confirmation: '',
 })
+
+const formRef = useTemplateRef('formRef')
 
 const rules = ref({
     old_password: [
@@ -49,8 +55,25 @@ const rules = ref({
     ],
 })
 
-const handleUpdatePassword = () => {
-    
+const handleUpdatePassword = async () => {
+    try {
+        formRef.value.validate();
+    } catch(err) {
+        return;
+    }
+    try {
+        const response = await request.put('/api/user/' + store.value.profile.id + '/password', {
+            oldPassword: form.value.old_password,
+            newPassword: form.value.new_password
+        })
+        if (response.status === 200) {
+            ElMessage.success('更新密码成功')
+        } else {
+            ElMessage.error(response.data.detail)
+        }
+    } catch (error) {
+        ElMessage.error(error.toString())
+    }
 }
 </script>
 

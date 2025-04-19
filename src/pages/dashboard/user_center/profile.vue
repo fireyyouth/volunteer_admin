@@ -2,10 +2,10 @@
     <h1>个人中心</h1>
     <el-descriptions border>
         <el-descriptions-item label="账号" :span="1">
-            {{ form.identifier }}
+            {{ form.account }}
         </el-descriptions-item>
         <el-descriptions-item label="姓名" :span="1">
-            <el-input v-model="form.username" :disabled="inputDisabled" />
+            <el-input v-model="form.name" :disabled="inputDisabled" />
         </el-descriptions-item>
         <el-descriptions-item label="性别" :span="1">
             <el-select v-model="form.gender" :disabled="inputDisabled">
@@ -17,7 +17,7 @@
             <el-input v-model="form.email" :disabled="inputDisabled" />
         </el-descriptions-item>
         <el-descriptions-item label="志愿时长" :span="1">
-            {{ form.volunteer_hours }}
+            {{ form.volunteerHour }}
         </el-descriptions-item>
     </el-descriptions>
     <el-button v-if="inputDisabled" type="primary" @click="inputDisabled = false">编辑</el-button>
@@ -33,13 +33,6 @@ import { store } from '~/store';
 import { request } from '~/utils';
 import { ElMessage } from 'element-plus';
 
-const roleMap = {
-    teacher: '教职工',
-    student: '学生',
-    visitor: '访客',
-    admin: '管理员'
-}
-
 const form = ref({
     ...store.value.profile,
 });
@@ -54,15 +47,14 @@ const handleCancel = () => {
 }
 
 const handleUpdateProfile = async () => {
-    const response = await request.post(`/api/main/user/${form.value.id}`, {
-        username: form.value.username,
+    const response = await request.put(`/api/user/${form.value.id}`, {
+        name: form.value.name,
         gender: form.value.gender,
         email: form.value.email,
-        phone: form.value.phone
     });
     if (response.status === 200) {
         ElMessage.success('更新成功');
-        store.value.profile = response.data.data;
+        store.value.profile = response.data;
         form.value = {
             ...store.value.profile,
         };
