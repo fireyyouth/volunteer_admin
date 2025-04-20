@@ -6,9 +6,6 @@
         <el-form-item label="活动要求" prop="volunteerCriteria">
             <el-input type="text" v-model="form.volunteerCriteria" placeholder="请输入活动要求" :validate-event="false" />
         </el-form-item>
-        <el-form-item label="志愿时长" prop="volunteerHour">
-            <el-input-number v-model="form.volunteerHour" placeholder="请输入志愿时长" :validate-event="false" />
-        </el-form-item>
         <el-form-item label="活动开始时间" prop="startDate">
             <el-date-picker v-model="form.startDate" type="date" placeholder="选择活动开始时间" />
         </el-form-item>
