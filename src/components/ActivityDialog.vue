@@ -12,6 +12,9 @@
         <el-form-item label="活动结束时间" prop="endDate">
             <el-date-picker v-model="form.endDate" type="date" placeholder="选择活动结束时间" />
         </el-form-item>
+        <el-form-item label="志愿时长" prop="volunteerHour">
+            <el-input-number v-model="form.volunteerHour" placeholder="请输入志愿时长" :validate-event="false" />
+        </el-form-item>
         <el-form-item label="活动图片" prop="imageURL">
             <el-input type="text" v-model="form.imageURL" placeholder="请输入活动图片 URL" :validate-event="false" />
         </el-form-item>

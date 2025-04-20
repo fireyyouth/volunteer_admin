@@ -29,7 +29,7 @@
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" v-if="row.status !== '已通过'" @click="handleApply(row.id)">申请举行该活动</el-button>
+                        <el-button type="primary" v-if="row.status === '待审核'" @click="handleApply(row.id)">申请举行</el-button>
                         <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
                     </template>
                 </el-table-column>

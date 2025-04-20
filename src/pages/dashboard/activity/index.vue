@@ -53,7 +53,7 @@ const filteredActivities = computed(() => {
 
 const fetchActivities = async () => {
     const response = await request.get('/api/activity/all')
-    activities.value = await response.data
+    activities.value = await response.data.filter(x => x.status === '已通过')
 }
 
 fetchActivities()

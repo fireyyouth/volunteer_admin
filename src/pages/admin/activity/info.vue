@@ -12,20 +12,6 @@
         </el-table>
     </el-dialog>
 
-    <el-dialog v-model="finishDialogVisible">
-        <template #header>
-            <h3>完成活动</h3>
-        </template>
-        <el-form>
-            <el-form-item label="时长">
-                <el-input-number v-model="volunteerHour" :min="0" :max="100" />
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="handleFinish">完成</el-button>
-            </el-form-item>
-        </el-form>
-    </el-dialog>
-
     <h1>活动信息管理</h1>
     <el-table :data="activityTable">
         <el-table-column label="活动名称">
@@ -40,12 +26,12 @@
         </el-table-column>
         <el-table-column prop="startDate" label="开始时间" />
         <el-table-column prop="endDate" label="结束时间" />
-        <el-table-column prop="createdOn" label="创建时间" />
+        <el-table-column prop="createdOn" label="创建时间" :formatter="dateFormatter" />
         <el-table-column prop="creatorName" label="负责人" />
         <el-table-column prop="status" label="状态" />
         <el-table-column label="操作">
             <template #default="{ row }">
-                <el-button type="primary" @click="finishDialogVisible = true; activityId = row.id">完成</el-button>
+                <el-button v-if="row.status === '已通过'" type="primary" @click="handleFinishActivity(row.id)">完成</el-button>
                 <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
             </template>
         </el-table-column>
@@ -72,6 +58,10 @@ const loadData = async () => {
     }
 }
 
+const dateFormatter = (row: any, column: any, cellValue: any) => {
+    return new Date(cellValue).toLocaleString()
+}
+
 loadData()
 
 const dialogVisible = ref(false)
@@ -95,15 +85,10 @@ const handleDeleteActivity = async (id) => {
     }
 }
 
-const finishDialogVisible = ref(false)
-const volunteerHour = ref(0)
-const activityId = ref(0)
-
-const handleFinish = async () => {
+const handleFinishActivity = async (id) => {
     try {
-        await request.put(`/api/activity/${activityId.value}`, { volunteerHour: volunteerHour.value })
+        await request.put(`/api/activity/${id}`, { status: '已完成' })
         ElMessage.success('成功')
-        finishDialogVisible.value = false
         await loadData()
     } catch (error) {
         ElMessage.error(error.response?.data?.detail)

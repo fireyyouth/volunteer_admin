@@ -16,7 +16,7 @@ import { request } from '~/utils'
 const joinedActivities = ref([])
 
 const finishedActivities = computed(() => {
-    return joinedActivities.value.filter(x => x.isFinished)
+    return joinedActivities.value.filter(x => x.status === '已完成')
 })
 
 const fetchJoinedActivities = async () => {
