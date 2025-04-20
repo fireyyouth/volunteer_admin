@@ -2,11 +2,11 @@
     <div class="register-page">
         <h1>志愿者活动平台注册</h1>
         <el-form :model="form" ref="formRef" label-width="100px" class="register-form" :rules="rules">
-            <el-form-item label="姓名" prop="username">
-                <el-input type="text" v-model="form.username" placeholder="请输入姓名" :validate-event="false" />
+            <el-form-item label="姓名" prop="name">
+                <el-input type="text" v-model="form.name" placeholder="请输入姓名" :validate-event="false" />
             </el-form-item>
-            <el-form-item label="账号" prop="identifier">
-                <el-input v-model="form.identifier" placeholder="请输入账号" />
+            <el-form-item label="账号" prop="account">
+                <el-input v-model="form.account" placeholder="请输入账号" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="form.password" placeholder="请输入密码" :validate-event="false" />
@@ -47,22 +47,20 @@ const loading = ref(false)
 const formRef = useTemplateRef<FormInstance>('formRef')
 
 const form = ref({
-    identifier: '',
+    account: '',
     password: '',
     password_confirmation: '',
-    username: '',
+    name: '',
     gender: '',
     email: '',
 })
 
 const rules = ref({
-    identifier: [
+    account: [
         { required: true, message: '请输入工号', trigger: 'blur' },
-        { min: 8, message: '账号长度至少为8位', trigger: 'blur' },
     ],
     password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, message: '密码长度至少为6位', trigger: 'blur' }
     ],
     password_confirmation: [
         { required: true, message: '请输入确认密码', trigger: 'blur' },
@@ -77,7 +75,7 @@ const rules = ref({
             trigger: 'blur'
         }
     ],
-    username: [
+    name: [
         { required: true, message: '请输入姓名', trigger: 'blur' },
     ],
     gender: [
@@ -104,19 +102,15 @@ const handleRegister = async () => {
     }
     loading.value = true
     try {
-        console.log('registering')
-        const response = await request.post(`/api/main/user`, form.value)
-        console.log(response)
-        if (response.status !== 200) {
-            ElMessage.error(response.data.detail)
-            return
-        }
-        ElMessage.success(response.data.detail)
+        const form_copy = JSON.parse(JSON.stringify(form.value))
+        delete form_copy.password_confirmation
+        const response = await request.post(`/api/user/register`, form_copy)
+        ElMessage.success('注册成功')
         await new Promise(resolve => setTimeout(resolve, 500))
         router.push('/login')
     } catch (error) {
         console.log('exception')
-        ElMessage.error(error.toString())
+        ElMessage.error(error.response?.data?.detail)
     } finally {
         loading.value = false
     }
