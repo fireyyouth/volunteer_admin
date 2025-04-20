@@ -14,18 +14,11 @@
                     <p> 活动编号: {{ activity.id }}</p>
                     <p> 活动时间: {{ activity.startDate }} - {{ activity.endDate }}</p>
                     <p> 创建时间: {{ new Date(activity.createdOn).toLocaleString() }}</p>
-                    <p> 活动人数: {{ activity.participants.length }}</p>
+                    <p> 活动人数: {{ activity.participants?.length }}</p>
                     <p> 参与条件: {{ activity.volunteerCriteria }}</p>
                     <p> 负责人: {{ activity.creatorName }}</p>
-                    <template v-if="activity.status === 'created'">
-                        <el-button type="primary" disabled>待审批</el-button>
-                    </template>
-                    <template v-else-if="store.profile.activities.includes(activity.id)">
-                        <el-button type="primary" disabled>已报名</el-button>
-                    </template>
-                    <template v-else-if="activity.status === 'approved'">
-                        <el-button type="primary" @click="handleJoinActivity">立即报名</el-button>
-                    </template>
+                    <p> 状态: {{ activity.status }}</p>
+                    <el-button type="primary" @click="handleJoinActivity">立即报名</el-button>
                 </div>
             </div>
         </div>
@@ -54,20 +47,18 @@ request.get('/api/activity/' + route.params.id)
     .finally(() => {
     })
 
-const handleJoinActivity = () => {
-    request.post('/api/apply/', {
-        activity: {
-            id: activity.value.id
-        },
-        kind: 'join'
-    })
-    .then(response => {
-        ElMessage.success('成功创建报名申请，请查看申请记录')
-    })
-    .catch(error => {
-        console.error(error)
-        ElMessage.error('报名失败')
-    })
+const handleJoinActivity = async() => {
+    try {
+        const response = await request.post('/api/apply/', {
+            activity: {
+                id: activity.value.id
+            },
+            kind: '参加'
+        })
+        ElMessage.success('已申请，请查看申请记录')
+    } catch(error) {
+        ElMessage.error(error.response.data.detail)
+    }
 }
 </script>
 
@@ -82,7 +73,7 @@ const handleJoinActivity = () => {
 
 .activity-info > div {
     flex: 1;
-    height: 450px;
+    height: 600px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     margin: 10px;
@@ -116,6 +107,6 @@ const handleJoinActivity = () => {
 
 img {
     width: 600px;
-    height: 400px;
+    height: 500px;
 }
 </style>

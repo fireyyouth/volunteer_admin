@@ -31,6 +31,12 @@ import { request } from '~/utils'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 
+const props = defineProps({
+    onSuccess: {
+        type: Function,
+        required: true
+    }
+})
 
 const formRef = useTemplateRef<FormInstance>('formRef')
 
@@ -68,6 +74,7 @@ const onSubmit = async () => {
         )
         if (response.status === 200) {
             ElMessage.success('提交成功')
+            props.onSuccess()
         } else {
             ElMessage.error('提交失败')
         }

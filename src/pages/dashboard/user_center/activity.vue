@@ -5,7 +5,7 @@
                 <template #title>
                     <h3>新建活动</h3>
                 </template>
-                <ActivityDialog />
+                <ActivityDialog :onSuccess="onSubmitSuccess" />
             </el-dialog>
             <div>
                 <el-button type="primary" @click="dialogVisible = true">新建活动</el-button>
@@ -24,12 +24,12 @@
                 </el-table-column>
                 <el-table-column prop="startDate" label="开始时间" />
                 <el-table-column prop="endDate" label="结束时间" />
-                <el-table-column prop="createdOn" label="发布时间" :formatter="dateFormatter"/>
+                <el-table-column prop="createdOn" label="创建时间" :formatter="dateFormatter"/>
                 <el-table-column prop="creatorName" label="负责人" />
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" v-if="row.status !== 'approved'" @click="handleApply(row.id)">申请举行该活动</el-button>
+                        <el-button type="primary" v-if="row.status !== '已通过'" @click="handleApply(row.id)">申请举行该活动</el-button>
                         <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -50,7 +50,7 @@
                 </el-table-column>
                 <el-table-column prop="startDate" label="开始时间" />
                 <el-table-column prop="endDate" label="结束时间" />
-                <el-table-column prop="createdOn" label="发布时间" :formatter="dateFormatter" />
+                <el-table-column prop="createdOn" label="创建时间" :formatter="dateFormatter" />
                 <el-table-column prop="creatorName" label="负责人" />
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
@@ -86,11 +86,16 @@ const joinedActivities = ref([])
 
 const fetchOwnActivities = async() => {
     const response = await request.get('/api/activity/own')
-    ownActivities.value = response.data
+    ownActivities.value = response.data.sort((a: any, b: any) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime())
 }
 const fetchJoinedActivities = async () => {
     const response = await request.get('/api/activity/joined')
-    joinedActivities.value = response.data
+    joinedActivities.value = response.data.sort((a: any, b: any) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime())
+}
+
+function onSubmitSuccess() {
+    dialogVisible.value = false
+    loadData()
 }
 
 function loadData() {
@@ -126,7 +131,7 @@ const handleApply = async (id: number) => {
             activity: {
                 id: id
             },
-            kind: 'host'
+            kind: '举办'
         })
         if (response.status === 200) {
             ElMessage.success('成功创建申请')

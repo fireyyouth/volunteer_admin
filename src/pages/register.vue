@@ -1,7 +1,7 @@
 <template>
     <div class="register-page">
         <h1>志愿者活动平台注册</h1>
-        <el-form :model="form" ref="formRef" label-width="auto" class="register-form" :rules="rules">
+        <el-form :model="form" ref="formRef" label-width="100px" class="register-form" :rules="rules">
             <el-form-item label="姓名" prop="username">
                 <el-input type="text" v-model="form.username" placeholder="请输入姓名" :validate-event="false" />
             </el-form-item>
@@ -26,8 +26,8 @@
             <el-form-item label=" ">
                 <el-button type="primary" @click="handleRegister" :loading="loading">注册</el-button>
             </el-form-item>
-            <el-form-item>
-                <el-button type="text" @click="router.push('/login')">已有账号, 直接登录</el-button>
+            <el-form-item label=" ">
+                <a @click="router.push('/login')">已有账号, 直接登录</a>
             </el-form-item>
         </el-form>
     </div>

@@ -2,7 +2,7 @@
   <div class="login-page">
     <h1 class="title">志愿者活动平台登录</h1>
     <div class="login-container">
-      <el-form :model="userForm" ref="userFormRef" label-width="auto" style="max-width: 600px"
+      <el-form :model="userForm" ref="userFormRef" label-width="0px" style="max-width: 600px"
       :rules="user_rules">
       <el-form-item prop="account">
         <el-input v-model="userForm.account" :prefix-icon="User" placeholder="请输入账号" />
@@ -15,7 +15,9 @@
         </el-form-item>
       </el-form>
       <el-form-item>
-        <el-button type="text" @click="router.push('/register')">注册用户</el-button>
+        <div class="link-block">
+          <a @click="router.push('/register')">注册用户</a>
+        </div>
       </el-form-item>
     </div>
   </div>
@@ -116,6 +118,11 @@ button {
   width: 100%;
 }
 
+.link-block {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 .title {
   font-size: 24px;
   font-weight: bold;
