@@ -55,7 +55,7 @@
                 <el-table-column prop="status" label="状态" />
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="warning" @click="handleDeleteParticipation(row.id)">退出</el-button>
+                        <el-button v-if="row.status !== '已完成'" type="warning" @click="handleDeleteParticipation(row.id)">退出</el-button>
                     </template>
                 </el-table-column>
             </el-table>
