@@ -8,7 +8,7 @@ import { store } from '~/store'
 const router = useRouter()
 
 function handleLogout() {
-  fetch('/api/main/logout', {
+  fetch('/api/logout', {
     method: 'POST',
   })
   .then(response => response.json())
