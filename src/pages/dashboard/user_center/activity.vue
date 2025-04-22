@@ -133,14 +133,10 @@ const handleApply = async (id: number) => {
             },
             kind: '举办'
         })
-        if (response.status === 200) {
-            ElMessage.success('成功创建申请')
-            loadData()
-        } else {
-            ElMessage.error('创建申请失败')
-        }
+        ElMessage.success('成功创建申请')
+        loadData()
     } catch (error) {
-        ElMessage.error('创建申请失败')
+        ElMessage.error(error.response?.data?.detail)
     }
 }
 </script>

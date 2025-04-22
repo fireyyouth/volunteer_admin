@@ -72,14 +72,10 @@ const onSubmit = async () => {
             `/api/activity/`,
             form
         )
-        if (response.status === 200) {
-            ElMessage.success('提交成功')
-            props.onSuccess()
-        } else {
-            ElMessage.error('提交失败')
-        }
+        ElMessage.success('提交成功')
+        props.onSuccess()
     } catch (error) {
-        ElMessage.error('错误:' + error.toString())
+        ElMessage.error(error.response?.data?.detail)
     }
 }
 
