@@ -30,7 +30,7 @@
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button type="primary" v-if="row.status === '待审核'" @click="handleApply(row.id)">申请举行</el-button>
-                        <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
+                        <el-button type="danger" v-if="row.status !== '已完成'" @click="handleDeleteActivity(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

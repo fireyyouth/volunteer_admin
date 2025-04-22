@@ -32,7 +32,7 @@
         <el-table-column label="操作">
             <template #default="{ row }">
                 <el-button v-if="row.status === '已通过'" type="primary" @click="handleFinishActivity(row.id)">完成</el-button>
-                <el-button type="danger" @click="handleDeleteActivity(row.id)">删除</el-button>
+                <el-button type="danger" v-if="row.status !== '已完成'" @click="handleDeleteActivity(row.id)">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
