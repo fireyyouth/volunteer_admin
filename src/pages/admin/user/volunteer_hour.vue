@@ -30,6 +30,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { request } from '~/utils'
+import { ElMessage } from 'element-plus'
 
 const users = ref([])
 
