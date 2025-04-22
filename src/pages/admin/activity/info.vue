@@ -24,11 +24,11 @@
                 <a @click="showParticipants(row)">{{ row.participants.length }}</a>
             </template>
         </el-table-column>
-        <el-table-column prop="startDate" label="开始时间" />
-        <el-table-column prop="endDate" label="结束时间" />
+        <el-table-column prop="startDate" label="开始时间" sortable />
+        <el-table-column prop="endDate" label="结束时间" sortable />
         <el-table-column prop="createdOn" label="创建时间" :formatter="dateFormatter" />
         <el-table-column prop="creatorName" label="负责人" />
-        <el-table-column prop="status" label="状态" />
+        <el-table-column prop="status" label="状态" sortable />
         <el-table-column label="操作">
             <template #default="{ row }">
                 <el-button v-if="row.status === '已通过'" type="primary" @click="handleFinishActivity(row.id)">完成</el-button>
