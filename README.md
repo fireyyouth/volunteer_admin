@@ -1,6 +1,5 @@
-# 部署
 
-## 目录结构
+# 目录结构
 
 ```
 volunteer_admin/
@@ -15,7 +14,7 @@ volunteer_admin/
 ├── pnpm-lock.yaml    # pnpm 锁定文件
 ```
 
-### src 目录说明
+## src 目录说明
 
 - **App.vue**：应用主组件
 - **main.ts**：应用入口文件
@@ -27,6 +26,8 @@ volunteer_admin/
 - **types.ts**：全局类型定义
 - **utils.ts**：工具函数
 - **components.d.ts** / **env.d.ts** / **typed-router.d.ts**：ts 类型声明文件
+
+# 部署
 
 ## 前置条件
 - 系统安装 nodejs 和 pnpm，最好是最新版
