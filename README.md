@@ -1,47 +1,15 @@
-# element-plus-vite-starter
+# 部署
 
-> A starter kit for Element Plus with Vite
+## 前置条件
+- 系统安装 nodejs 和 pnpm，最好是最新版
+- 安装依赖, 在项目根目录执行 `pnpm install`
 
-- Preview: <https://vite-starter.element-plus.org>
-
-This is an example of on-demand element-plus with [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components).
-
-> If you want to import all, it may be so simple that no examples are needed. Just follow [quickstart | Docs](https://element-plus.org/zh-CN/guide/quickstart.html) and import them.
-
-If you just want an on-demand import example `manually`, you can check [unplugin-element-plus/examples/vite](https://github.com/element-plus/unplugin-element-plus/tree/main/examples/vite).
-
-If you want to a nuxt starter, see [element-plus-nuxt-starter](https://github.com/element-plus/element-plus-nuxt-starter/).
-
-## Project setup
-
-```bash
-pnpm install
-
-# npm install
-# yarn install
+## 运行
 ```
-
-### Compiles and hot-reloads for development
-
-```bash
-npm run dev
+pnpm run dev
 ```
-
-### Compiles and minifies for production
-
-```bash
-npm run build
+或者
 ```
-
-## Usage
-
-```bash
-git clone https://github.com/element-plus/element-plus-vite-starter
-cd element-plus-vite-starter
-npm i
-npm run dev
+pnpm run build
+pnpm run preview
 ```
-
-### Custom theme
-
-See `src/styles/element/index.scss`.
